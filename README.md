@@ -1,5 +1,5 @@
-  # TravelVerse
-  > Explore the World, One Country at a Time
+# TravelVerse
+> Explore the World, One Country at a Time
 
 ## About
 TravelVerse is a web application that lets you explore every country in the
