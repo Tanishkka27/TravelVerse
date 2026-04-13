@@ -1,9 +1,20 @@
 import { useState, useEffect, useRef } from 'react'
+import { Routes, Route } from 'react-router-dom'
 import { fetchAllCountries } from './utils/api'
 import CountryCard from './components/CountryCard'
 import CountryModal from './components/CountryModal'
+import CountryDetail from './pages/CountryDetail'
 
 export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/country/:cca3" element={<CountryDetail />} />
+    </Routes>
+  )
+}
+
+function Home() {
   const [countries, setCountries]           = useState([])
   const [loading, setLoading]               = useState(true)
   const [error, setError]                   = useState(null)
@@ -40,7 +51,6 @@ export default function App() {
     return () => window.removeEventListener('scroll', fn)
   }, [])
 
-  // Intersection observer for scroll reveals
   useEffect(() => {
     const obs = new IntersectionObserver(
       entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible') }),
@@ -73,60 +83,41 @@ export default function App() {
   if (loading) return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-[#fdf6ee] dark:bg-[#0a0a0a] gap-4">
       <div className="spinner" />
-      <p className="text-xs tracking-[0.2em] uppercase text-[#7a5c45] dark:text-[#8a7a6a]">
-        Loading the world
-      </p>
+      <p className="text-xs tracking-[0.2em] uppercase text-[#7a5c45] dark:text-[#8a7a6a]">Loading the world</p>
     </div>
   )
 
   if (error) return (
     <div className="min-h-screen flex items-center justify-center bg-[#fdf6ee] dark:bg-[#0a0a0a]">
-      <p className="text-sm text-[#a0522d] dark:text-[#b8922a]">
-        Could not reach the server. Check your connection.
-      </p>
+      <p className="text-sm text-[#a0522d] dark:text-[#b8922a]">Could not reach the server. Check your connection.</p>
     </div>
   )
 
   return (
     <div className="min-h-screen bg-[#fdf6ee] dark:bg-[#0a0a0a] transition-colors duration-500">
-
-      {/* ── NAVBAR ── */}
       <nav className={`glass-nav sticky top-0 z-40 px-6 py-4 flex items-center justify-between ${scrolled ? 'scrolled' : ''}`}>
-        <span className="font-semibold text-lg tracking-tight text-[#2c1a0e] dark:text-[#f0e6d0]">
-          TravelVerse
-        </span>
+        <span className="font-semibold text-lg tracking-tight text-[#2c1a0e] dark:text-[#f0e6d0]">TravelVerse</span>
         <div className="flex items-center gap-4">
-          <span className="text-xs tracking-widest text-[#7a5c45] dark:text-[#8a7a6a] hidden sm:block">
-            {sorted.length} countries
-          </span>
+          <span className="text-xs tracking-widest text-[#7a5c45] dark:text-[#8a7a6a] hidden sm:block">{sorted.length} countries</span>
           <button
             onClick={() => setDark(d => !d)}
-            className="px-4 py-1.5 rounded-full text-xs font-medium tracking-wide border transition-all duration-300
-              border-[#c4793a] text-[#c4793a] hover:bg-[#c4793a] hover:text-white
-              dark:border-[#b8922a] dark:text-[#b8922a] dark:hover:bg-[#b8922a] dark:hover:text-[#0a0a0a]"
+            className="px-4 py-1.5 rounded-full text-xs font-medium tracking-wide border transition-all duration-300 border-[#c4793a] text-[#c4793a] hover:bg-[#c4793a] hover:text-white dark:border-[#b8922a] dark:text-[#b8922a] dark:hover:bg-[#b8922a] dark:hover:text-[#0a0a0a]"
           >
             {dark ? '◎ Sunrise' : '● Dusk'}
           </button>
         </div>
       </nav>
 
-      {/* ── HERO ── */}
       <section ref={heroRef} className="text-center pt-20 pb-16 px-6">
-        <p className="text-xs tracking-[0.3em] uppercase text-[#c4793a] dark:text-[#b8922a] mb-4">
-          Every country. One place.
-        </p>
-        <h1
-          className="text-5xl sm:text-7xl font-light tracking-tight mb-6 text-[#2c1a0e] dark:text-[#f0e6d0]"
-          style={{ fontFamily: "'Cormorant Garamond', serif" }}
-        >
+        <p className="text-xs tracking-[0.3em] uppercase text-[#c4793a] dark:text-[#b8922a] mb-4">Every country. One place.</p>
+        <h1 className="text-5xl sm:text-7xl font-light tracking-tight mb-6 text-[#2c1a0e] dark:text-[#f0e6d0]" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
           Explore the World
         </h1>
         <p className="text-[#7a5c45] dark:text-[#8a7a6a] text-lg font-light max-w-md mx-auto">
-          {countries.length} nations. Their flags, capitals, languages, currencies and live weather — all in one place.
+          {countries.length} nations. Flags, capitals, languages, currencies and live weather.
         </p>
       </section>
 
-      {/* ── SEARCH + FILTERS ── */}
       <section className="reveal max-w-2xl mx-auto px-6 pb-12">
         <div className="search-wrap rounded-2xl border border-[rgba(160,82,45,0.18)] dark:border-[rgba(184,146,42,0.18)] bg-white/70 dark:bg-[#161616] mb-4 overflow-hidden">
           <input
@@ -138,40 +129,20 @@ export default function App() {
           />
         </div>
         <div className="flex gap-3 flex-wrap">
-          {[
-            {
-              value: region,
-              onChange: e => setRegion(e.target.value),
-              options: ['All','Africa','Americas','Asia','Europe','Oceania']
-            },
-            {
-              value: sortBy,
-              onChange: e => setSortBy(e.target.value),
-              options: [
-                { v: 'name-asc',  l: 'Name A–Z' },
-                { v: 'name-desc', l: 'Name Z–A' },
-                { v: 'pop-asc',   l: 'Population ↑' },
-                { v: 'pop-desc',  l: 'Population ↓' },
-              ]
-            }
-          ].map((sel, i) => (
-            <select
-              key={i}
-              value={sel.value}
-              onChange={sel.onChange}
-              className="px-4 py-2.5 rounded-xl text-sm border border-[rgba(160,82,45,0.18)] dark:border-[rgba(184,146,42,0.18)] bg-white/70 dark:bg-[#161616] text-[#2c1a0e] dark:text-[#f0e6d0] outline-none"
-            >
-              {sel.options.map(o =>
-                typeof o === 'string'
-                  ? <option key={o} value={o}>{o}</option>
-                  : <option key={o.v} value={o.v}>{o.l}</option>
-              )}
-            </select>
-          ))}
+          <select value={region} onChange={e => setRegion(e.target.value)}
+            className="px-4 py-2.5 rounded-xl text-sm border border-[rgba(160,82,45,0.18)] dark:border-[rgba(184,146,42,0.18)] bg-white/70 dark:bg-[#161616] text-[#2c1a0e] dark:text-[#f0e6d0] outline-none">
+            {['All','Africa','Americas','Asia','Europe','Oceania'].map(r => <option key={r}>{r}</option>)}
+          </select>
+          <select value={sortBy} onChange={e => setSortBy(e.target.value)}
+            className="px-4 py-2.5 rounded-xl text-sm border border-[rgba(160,82,45,0.18)] dark:border-[rgba(184,146,42,0.18)] bg-white/70 dark:bg-[#161616] text-[#2c1a0e] dark:text-[#f0e6d0] outline-none">
+            <option value="name-asc">Name A–Z</option>
+            <option value="name-desc">Name Z–A</option>
+            <option value="pop-asc">Population ↑</option>
+            <option value="pop-desc">Population ↓</option>
+          </select>
         </div>
       </section>
 
-      {/* ── GRID ── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-24">
         {sorted.length === 0 ? (
           <p className="text-center text-[#7a5c45] dark:text-[#8a7a6a] py-20">No countries found.</p>
@@ -191,13 +162,7 @@ export default function App() {
         )}
       </section>
 
-      {/* ── MODAL — rendered at root level, outside all transformed elements ── */}
-      {selected && (
-        <CountryModal
-          country={selected}
-          onClose={() => setSelected(null)}
-        />
-      )}
+      {selected && <CountryModal country={selected} onClose={() => setSelected(null)} />}
     </div>
   )
 }

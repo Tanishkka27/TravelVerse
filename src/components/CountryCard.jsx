@@ -1,15 +1,16 @@
 export default function CountryCard({ country, index, isFavorite, onSelect, onFavorite }) {
   const delay = `${Math.min(index * 35, 600)}ms`
 
+  function handleClick() {
+    window.open(`/country/${country.cca3}`, '_blank')
+  }
+
   return (
     <article
-      className="country-card card-enter rounded-2xl overflow-hidden cursor-pointer
-        border border-[rgba(160,82,45,0.12)] dark:border-[rgba(184,146,42,0.1)]
-        bg-[rgba(255,248,240,0.9)] dark:bg-[#161616]"
+      className="country-card card-enter rounded-2xl overflow-hidden cursor-pointer border border-[rgba(160,82,45,0.12)] dark:border-[rgba(184,146,42,0.1)] bg-[rgba(255,248,240,0.9)] dark:bg-[#161616]"
       style={{ animationDelay: delay }}
-      onClick={() => onSelect(country)}
+      onClick={handleClick}
     >
-      {/* Flag — zoom happens on img, not card (so modal works) */}
       <div className="relative overflow-hidden h-40 bg-[#f5dfc8] dark:bg-[#1a1a1a]">
         <img
           src={country.flags.svg}
@@ -17,7 +18,6 @@ export default function CountryCard({ country, index, isFavorite, onSelect, onFa
           className="flag-img w-full h-full object-cover"
           loading="lazy"
         />
-        {/* Subtle gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none" />
       </div>
 
@@ -34,7 +34,6 @@ export default function CountryCard({ country, index, isFavorite, onSelect, onFa
             {isFavorite ? '★' : '☆'}
           </button>
         </div>
-
         <div className="space-y-1.5">
           <p className="text-xs text-[#7a5c45] dark:text-[#8a7a6a]">
             <span className="text-[#c4a882] dark:text-[#4a3a2a] mr-1.5">Capital</span>

@@ -9,7 +9,7 @@ export default function CountryCard({ country, index, isFavorite, onSelect, onFa
       style={{ animationDelay: delay }}
       onClick={() => onSelect(country)}
     >
-      {/* Flag — zoom happens on img, not card (so modal works) */}
+
       <div className="relative overflow-hidden h-40 bg-[#f5dfc8] dark:bg-[#1a1a1a]">
         <img
           src={country.flags.svg}
@@ -17,7 +17,7 @@ export default function CountryCard({ country, index, isFavorite, onSelect, onFa
           className="flag-img w-full h-full object-cover"
           loading="lazy"
         />
-        {/* Subtle gradient overlay */}
+
         <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none" />
       </div>
 
